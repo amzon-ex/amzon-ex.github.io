@@ -1,0 +1,142 @@
+:root {
+  --base-color: #d2d200;
+  --dark-level-1: #abab00;
+  --dark-level-2: #828200;
+  --light-level-1: #fafa1d;
+  --light-level-2: #ffff4f;
+}
+
+body {
+	padding: 0px;
+	margin: 0px;
+  background: #000000;
+  color: var(--dark-level-1);
+  font-family: 'Arvo', serif;
+}
+
+.toolblock {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+#desc {
+    position: absolute;
+    padding: 12px;
+    padding-top: 0px;
+    border: none;
+    /*border-width: 3px;
+    border-color: #999944;*/
+}
+
+#headtext {
+    font-size: 200%;
+    color: var(--base-color); /* base colour */
+}
+
+hr {
+    clear: both;
+    height: 2px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: var(--base-color);
+    border: none;
+}
+
+/*input[type=color] {
+    opacity: 0;
+    display: block;
+    width: 32px;
+    height: 32px;
+    border: none;
+}
+
+#color-picker-wrapper {
+    float: left;
+}*/
+
+button {
+    font-family: 'Arvo', serif;
+    background-color: var(--dark-level-1);
+    padding: 8px 12px 8px 12px;
+    color: #fff;
+	border: none;
+    display: inline-block;
+	font-weight: 300;
+	font-size: 95%;
+    outline: none;
+}
+
+button:hover {
+    background-color: var(--base-color);
+    color: #111;
+    /*outline: solid;
+    outline-width: 4px;
+    outline-color: #7a7a00;
+    outline-offset: -4px;*/
+}
+
+button:disabled {
+    font-family: 'Arvo', serif;
+    background-color: var(--dark-level-1);
+    opacity: 50%;
+    padding: 12px;
+    color: #fff;
+    border: none;
+    display: inline-block;
+    font-weight: 300;
+    font-size: 95%;
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  float: left;
+  width: 50%;
+  height: 20px; /* Specified height */
+  background: var(--base-color); /* background */
+  outline: none; /* Remove outline */
+  opacity: 0.75; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .15s; /* 0.1 seconds transition on hover */
+  transition: opacity .15s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* Browser-spcific customisations of the slider handle */
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--dark-level-2);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--dark-level-2);
+  cursor: pointer;
+}
+
+#speedval {
+	float: left;
+	margin-top: 2px;
+	width: 40px;
+	height: 20px;
+	background-color: var(--dark-level-1);
+	color: #000;
+	text-align: center;
+	line-height: 20px;	/* setting equal to the div height vertical-centers text*/
+	font-size: 75%;
+}
+
+#saveblock {
+    padding-top: 4px;
+    clear: both;
+}
