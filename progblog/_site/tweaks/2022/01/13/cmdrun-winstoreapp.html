@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="/css/searchoverlay.css" rel="stylesheet"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Run Windows Store App from command line | ProgBlog</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="Run Windows Store App from command line" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The procedure to launch Windows Store apps manually seems to be convoluted, as there are a host of permission issues associated with it. Windows Store apps are usually stored in the folder C:\Program Files\WindowsApps. The folder is hidden and permissions are restricted. Apps within this folder cannot be run manually (atleast in my experience?). The method outlined here helps us launch such an application manually from the command line, which might be handy. We follow this guide loosely. The command that achieves it has the format explorer shell:appsfolder\&lt;PackageFamilyName&gt;!&lt;ApplicationID&gt; Time to explain! The shell:appsfolder location points to all the installed applications on the system. Indeed, if we type this out in the File Explorer address bar or in the Windows Run dialog, we’re taken to the folder.1 Now we need to find the PackageFamilyName and ApplicationID of the Windows Store app of interest. To do so, we create a shortcut (on the Desktop) of the app of interest by right-clicking on it in the shell:appsfolder. Once, the shortcut is created, we open its Properties and under the Shortcut tab, we can see the Target field which lists exactly the &lt;PackageFamilyName&gt;!&lt;ApplicationID&gt; format, but this being an advertised shortcut, the field will be greyed out and since the entry is long, it might not be possible to read all of it. If one can, however - our task’s accomplished - just put it in the format and the application runs! Otherwise, read on. We run a powershell instance and run the following command: Get-AppxPackage -Name &quot;&lt;app-name-wildcard&gt;&quot; where &lt;app-name-wildcard&gt; is a wildcard string that is related to our application of interest. Basically, we use a part of the application name (which we of course, know) along with wildcard characters to find the relevent app entry using Get-AppxPackage. For example, this displays the entry of the Microsoft Photos app (bundled by default): Get-AppxPackage -Name &quot;*Photo*&quot; Name : Microsoft.Windows.Photos Publisher : CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US Architecture : X64 ResourceId : Version : 2021.21110.8005.0 PackageFullName : Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe InstallLocation : C:\Program Files\WindowsApps\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe IsFramework : False PackageFamilyName : Microsoft.Windows.Photos_8wekyb3d8bbwe PublisherId : 8wekyb3d8bbwe IsResourcePackage : False IsBundle : False IsDevelopmentMode : False NonRemovable : False Dependencies : {Microsoft.Photos.MediaEngineDLC_1.0.0.0_x64__8wekyb3d8bbwe, Microsoft.UI.Xaml.2.6_2.62112.3002.0_x64__8wekyb3d8bbwe, Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe, Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe...} IsPartiallyStaged : False SignatureKind : Store Status : Ok This method displays both the PackageFamilyName (Microsoft.Windows.Photos_8wekyb3d8bbwe in this case) and the location of the executable (C:\Program Files\WindowsApps\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe). A less hit-and-miss method would be to use keywords we found in the target field of the app shortcut (preferably, the beginning of the string, which we can always see) and use the Where-Object cmdlet to filter results using the PackageFamilyName itself2… like so: Get-AppxPackage | Where-Object {$_ -like &quot;*Photo*&quot;} with that out of the way, we can now go to the folder containing the app and find the AppxManifest.xml file there. In this file, we need to find the ApplicationID.3 For Microsoft Photos, for instance: &lt;Application Id=&quot;App&quot; Executable=&quot;Microsoft.Photos.exe&quot; EntryPoint=&quot;AppStubCS.Windows.App&quot; ResourceGroup=&quot;AppGroup&quot;&gt; The ApplicationID is just “App” in this case. So, the command to launch Microsoft Photos from the command line then becomes: explorer shell:appsfolder\Microsoft.Windows.Photos_8wekyb3d8bbwe!App I personally use Microsoft Powertoys for the same - &gt; shell:appsfolder does the trick. &#8617; The first method, if it works reliably, then creating the shortcut or going to shell:appsfolder is redundant. &#8617; A simple document search should do. We should search for the Executable= property of the application, as one application package may contain more than one application. &#8617;" />
+<meta property="og:description" content="The procedure to launch Windows Store apps manually seems to be convoluted, as there are a host of permission issues associated with it. Windows Store apps are usually stored in the folder C:\Program Files\WindowsApps. The folder is hidden and permissions are restricted. Apps within this folder cannot be run manually (atleast in my experience?). The method outlined here helps us launch such an application manually from the command line, which might be handy. We follow this guide loosely. The command that achieves it has the format explorer shell:appsfolder\&lt;PackageFamilyName&gt;!&lt;ApplicationID&gt; Time to explain! The shell:appsfolder location points to all the installed applications on the system. Indeed, if we type this out in the File Explorer address bar or in the Windows Run dialog, we’re taken to the folder.1 Now we need to find the PackageFamilyName and ApplicationID of the Windows Store app of interest. To do so, we create a shortcut (on the Desktop) of the app of interest by right-clicking on it in the shell:appsfolder. Once, the shortcut is created, we open its Properties and under the Shortcut tab, we can see the Target field which lists exactly the &lt;PackageFamilyName&gt;!&lt;ApplicationID&gt; format, but this being an advertised shortcut, the field will be greyed out and since the entry is long, it might not be possible to read all of it. If one can, however - our task’s accomplished - just put it in the format and the application runs! Otherwise, read on. We run a powershell instance and run the following command: Get-AppxPackage -Name &quot;&lt;app-name-wildcard&gt;&quot; where &lt;app-name-wildcard&gt; is a wildcard string that is related to our application of interest. Basically, we use a part of the application name (which we of course, know) along with wildcard characters to find the relevent app entry using Get-AppxPackage. For example, this displays the entry of the Microsoft Photos app (bundled by default): Get-AppxPackage -Name &quot;*Photo*&quot; Name : Microsoft.Windows.Photos Publisher : CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US Architecture : X64 ResourceId : Version : 2021.21110.8005.0 PackageFullName : Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe InstallLocation : C:\Program Files\WindowsApps\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe IsFramework : False PackageFamilyName : Microsoft.Windows.Photos_8wekyb3d8bbwe PublisherId : 8wekyb3d8bbwe IsResourcePackage : False IsBundle : False IsDevelopmentMode : False NonRemovable : False Dependencies : {Microsoft.Photos.MediaEngineDLC_1.0.0.0_x64__8wekyb3d8bbwe, Microsoft.UI.Xaml.2.6_2.62112.3002.0_x64__8wekyb3d8bbwe, Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe, Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe...} IsPartiallyStaged : False SignatureKind : Store Status : Ok This method displays both the PackageFamilyName (Microsoft.Windows.Photos_8wekyb3d8bbwe in this case) and the location of the executable (C:\Program Files\WindowsApps\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe). A less hit-and-miss method would be to use keywords we found in the target field of the app shortcut (preferably, the beginning of the string, which we can always see) and use the Where-Object cmdlet to filter results using the PackageFamilyName itself2… like so: Get-AppxPackage | Where-Object {$_ -like &quot;*Photo*&quot;} with that out of the way, we can now go to the folder containing the app and find the AppxManifest.xml file there. In this file, we need to find the ApplicationID.3 For Microsoft Photos, for instance: &lt;Application Id=&quot;App&quot; Executable=&quot;Microsoft.Photos.exe&quot; EntryPoint=&quot;AppStubCS.Windows.App&quot; ResourceGroup=&quot;AppGroup&quot;&gt; The ApplicationID is just “App” in this case. So, the command to launch Microsoft Photos from the command line then becomes: explorer shell:appsfolder\Microsoft.Windows.Photos_8wekyb3d8bbwe!App I personally use Microsoft Powertoys for the same - &gt; shell:appsfolder does the trick. &#8617; The first method, if it works reliably, then creating the shortcut or going to shell:appsfolder is redundant. &#8617; A simple document search should do. We should search for the Executable= property of the application, as one application package may contain more than one application. &#8617;" />
+<link rel="canonical" href="http://localhost:4000/tweaks/2022/01/13/cmdrun-winstoreapp.html" />
+<meta property="og:url" content="http://localhost:4000/tweaks/2022/01/13/cmdrun-winstoreapp.html" />
+<meta property="og:site_name" content="ProgBlog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-13T14:10:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Run Windows Store App from command line" />
+<script type="application/ld+json">
+{"headline":"Run Windows Store App from command line","dateModified":"2022-01-13T14:10:00+05:30","datePublished":"2022-01-13T14:10:00+05:30","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/tweaks/2022/01/13/cmdrun-winstoreapp.html"},"url":"http://localhost:4000/tweaks/2022/01/13/cmdrun-winstoreapp.html","description":"The procedure to launch Windows Store apps manually seems to be convoluted, as there are a host of permission issues associated with it. Windows Store apps are usually stored in the folder C:\\Program Files\\WindowsApps. The folder is hidden and permissions are restricted. Apps within this folder cannot be run manually (atleast in my experience?). The method outlined here helps us launch such an application manually from the command line, which might be handy. We follow this guide loosely. The command that achieves it has the format explorer shell:appsfolder\\&lt;PackageFamilyName&gt;!&lt;ApplicationID&gt; Time to explain! The shell:appsfolder location points to all the installed applications on the system. Indeed, if we type this out in the File Explorer address bar or in the Windows Run dialog, we’re taken to the folder.1 Now we need to find the PackageFamilyName and ApplicationID of the Windows Store app of interest. To do so, we create a shortcut (on the Desktop) of the app of interest by right-clicking on it in the shell:appsfolder. Once, the shortcut is created, we open its Properties and under the Shortcut tab, we can see the Target field which lists exactly the &lt;PackageFamilyName&gt;!&lt;ApplicationID&gt; format, but this being an advertised shortcut, the field will be greyed out and since the entry is long, it might not be possible to read all of it. If one can, however - our task’s accomplished - just put it in the format and the application runs! Otherwise, read on. We run a powershell instance and run the following command: Get-AppxPackage -Name &quot;&lt;app-name-wildcard&gt;&quot; where &lt;app-name-wildcard&gt; is a wildcard string that is related to our application of interest. Basically, we use a part of the application name (which we of course, know) along with wildcard characters to find the relevent app entry using Get-AppxPackage. For example, this displays the entry of the Microsoft Photos app (bundled by default): Get-AppxPackage -Name &quot;*Photo*&quot; Name : Microsoft.Windows.Photos Publisher : CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US Architecture : X64 ResourceId : Version : 2021.21110.8005.0 PackageFullName : Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe InstallLocation : C:\\Program Files\\WindowsApps\\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe IsFramework : False PackageFamilyName : Microsoft.Windows.Photos_8wekyb3d8bbwe PublisherId : 8wekyb3d8bbwe IsResourcePackage : False IsBundle : False IsDevelopmentMode : False NonRemovable : False Dependencies : {Microsoft.Photos.MediaEngineDLC_1.0.0.0_x64__8wekyb3d8bbwe, Microsoft.UI.Xaml.2.6_2.62112.3002.0_x64__8wekyb3d8bbwe, Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe, Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe...} IsPartiallyStaged : False SignatureKind : Store Status : Ok This method displays both the PackageFamilyName (Microsoft.Windows.Photos_8wekyb3d8bbwe in this case) and the location of the executable (C:\\Program Files\\WindowsApps\\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe). A less hit-and-miss method would be to use keywords we found in the target field of the app shortcut (preferably, the beginning of the string, which we can always see) and use the Where-Object cmdlet to filter results using the PackageFamilyName itself2… like so: Get-AppxPackage | Where-Object {$_ -like &quot;*Photo*&quot;} with that out of the way, we can now go to the folder containing the app and find the AppxManifest.xml file there. In this file, we need to find the ApplicationID.3 For Microsoft Photos, for instance: &lt;Application Id=&quot;App&quot; Executable=&quot;Microsoft.Photos.exe&quot; EntryPoint=&quot;AppStubCS.Windows.App&quot; ResourceGroup=&quot;AppGroup&quot;&gt; The ApplicationID is just “App” in this case. So, the command to launch Microsoft Photos from the command line then becomes: explorer shell:appsfolder\\Microsoft.Windows.Photos_8wekyb3d8bbwe!App I personally use Microsoft Powertoys for the same - &gt; shell:appsfolder does the trick. &#8617; The first method, if it works reliably, then creating the shortcut or going to shell:appsfolder is redundant. &#8617; A simple document search should do. We should search for the Executable= property of the application, as one application package may contain more than one application. &#8617;","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="ProgBlog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">ProgBlog</a>
+
+    <script>
+      $(document).ready(function() {
+      $('#close-btn').click(function() {
+        $('#search-overlay').fadeOut();
+        $('#search-btn').show();
+      });
+      $('#search-btn').click(function() {
+        $(this).hide();
+        $('#search-overlay').fadeIn();
+      });
+    });
+    </script>
+    
+    <i id="search-btn" class="fa fa-search fa-2x"></i>
+    <div id="search-overlay" class="block">
+      <div class="centered">
+        <!-- <div id='search-box'>
+          <i id="close-btn" class="fa fa-times fa-2x"></i>
+          <form action='/search' id='search-form' method='get' target='_top'>
+            <input id='search-text' name='q' placeholder='Search' type='text' />
+            <button id='search-button' type='submit'>                     
+              <i id="search-btn" class="fa fa-search fa-2x"></i>
+            </button>
+          </form>
+        </div> -->
+
+        <!-- Html Elements for Search -->
+        <div id="search-box">
+          <i id="close-btn" class="fa fa-times fa-2x"></i>
+          <input type="text" id="search-input" class="mousetrap" placeholder="Start searching...">
+          <ul id="results-container"></ul>
+        </div>
+      </div>
+    </div>
+    <!-- Script pointing to search-script.js -->
+    <script src="/js/search-script.js" type="text/javascript"></script>
+
+    <!-- Configuration -->
+    <script>
+    var srch = SimpleJekyllSearch({
+      searchInput: document.getElementById('search-input'),
+      resultsContainer: document.getElementById('results-container'),
+      json: '/search.json',
+      searchResultTemplate: `
+      <li>
+        <div style="display:inline"><a href="{url}" title="{desc}">{title}</a></div>
+        <div style="width:20%; float:right; border-left:2px solid #777"><span style="padding-left: 5px; opacity:0.75">{category}</span></div>
+      </li>
+      `
+    })
+    </script>
+
+    <!-- Custom keybind to search -->
+    <script>
+      function showSearch() {
+        if($('#close-btn').is(":hidden")) {
+          $('#search-btn').click();
+          $('#search-input').focus();
+        }
+      }
+      function hideSearch() {
+        if($('#search-btn').is(":hidden")) {
+          $('#close-btn').click();
+        }
+      }
+      Mousetrap.bind(['command+shift+f', 'ctrl+shift+f'], showSearch);
+      Mousetrap.bind(['escape'], hideSearch);
+    </script>
+  </div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Run Windows Store App from command line</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2022-01-13T14:10:00+05:30" itemprop="datePublished">Jan 13, 2022
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    
+<p>The procedure to launch Windows Store apps manually seems to be convoluted, as there are a host of permission issues associated with it. Windows Store apps are usually stored in the folder <em>C:\Program Files\WindowsApps</em>. The folder is hidden and permissions are restricted. Apps within this folder cannot be run manually (atleast in my experience?).</p>
+
+<p>The method outlined here helps us launch such an application manually from the command line, which might be handy. We follow <a href="https://www.tenforums.com/software-apps/57000-method-open-any-windows-10-apps-command-line.html">this guide</a> loosely.</p>
+
+<p>The command that achieves it has the format</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>explorer shell:appsfolder\&lt;PackageFamilyName&gt;!&lt;ApplicationID&gt;
+</code></pre></div></div>
+<p>Time to explain!</p>
+
+<p>The <em>shell:appsfolder</em> location points to all the installed applications on the system. Indeed, if we type this out in the File Explorer address bar or in the Windows Run dialog, we’re taken to the folder.<sup id="fnref:accessmethod" role="doc-noteref"><a href="#fn:accessmethod" class="footnote" rel="footnote">1</a></sup> Now we need to find the <em>PackageFamilyName</em> and <em>ApplicationID</em> of the Windows Store app of interest.</p>
+
+<p>To do so, we create a shortcut (on the Desktop) of the app of interest by right-clicking on it in the <em>shell:appsfolder</em>. Once, the shortcut is created, we open its <strong>Properties</strong> and under the <strong>Shortcut</strong> tab, we can see the <strong>Target</strong> field which lists exactly the <code class="language-plaintext highlighter-rouge">&lt;PackageFamilyName&gt;!&lt;ApplicationID&gt;</code> format, but this being an <a href="https://stackoverflow.com/a/1270833/12983399">advertised shortcut</a>, the field will be greyed out and since the entry is long, it might not be possible to read all of it. If one can, however - our task’s accomplished - just put it in the format and the application runs! Otherwise, read on.</p>
+
+<p>We run a powershell instance and run the following command:</p>
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-AppxPackage</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="s2">"&lt;app-name-wildcard&gt;"</span><span class="w">
+</span></code></pre></div></div>
+<p>where <code class="language-plaintext highlighter-rouge">&lt;app-name-wildcard&gt;</code> is a wildcard string that is related to our application of interest. Basically, we use a part of the application name (which we of course, know) along with wildcard characters to find the relevent app entry using <code class="language-plaintext highlighter-rouge">Get-AppxPackage</code>. For example, this displays the entry of the <strong>Microsoft Photos</strong> app (bundled by default):</p>
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-AppxPackage</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="s2">"*Photo*"</span><span class="w">
+
+
+</span><span class="n">Name</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">Microsoft.Windows.Photos</span><span class="w">
+</span><span class="n">Publisher</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="nx">CN</span><span class="o">=</span><span class="n">Microsoft</span><span class="w"> </span><span class="nx">Corporation</span><span class="p">,</span><span class="w"> </span><span class="nx">O</span><span class="o">=</span><span class="n">Microsoft</span><span class="w"> </span><span class="nx">Corporation</span><span class="p">,</span><span class="w"> </span><span class="nx">L</span><span class="o">=</span><span class="n">Redmond</span><span class="p">,</span><span class="w"> </span><span class="nx">S</span><span class="o">=</span><span class="n">Washington</span><span class="p">,</span><span class="w"> </span><span class="nx">C</span><span class="o">=</span><span class="n">US</span><span class="w">
+</span><span class="nx">Architecture</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="nx">X64</span><span class="w">
+</span><span class="n">ResourceId</span><span class="w">        </span><span class="p">:</span><span class="w">
+</span><span class="n">Version</span><span class="w">           </span><span class="p">:</span><span class="w"> </span><span class="nx">2021.21110.8005.0</span><span class="w">
+</span><span class="n">PackageFullName</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="nx">Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe</span><span class="w">
+</span><span class="n">InstallLocation</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="nx">C:\Program</span><span class="w"> </span><span class="nx">Files\WindowsApps\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe</span><span class="w">
+</span><span class="n">IsFramework</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="nx">False</span><span class="w">
+</span><span class="n">PackageFamilyName</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nx">Microsoft.Windows.Photos_8wekyb3d8bbwe</span><span class="w">
+</span><span class="n">PublisherId</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="nx">8wekyb3d8bbwe</span><span class="w">
+</span><span class="n">IsResourcePackage</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nx">False</span><span class="w">
+</span><span class="n">IsBundle</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="nx">False</span><span class="w">
+</span><span class="n">IsDevelopmentMode</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nx">False</span><span class="w">
+</span><span class="n">NonRemovable</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="nx">False</span><span class="w">
+</span><span class="n">Dependencies</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="n">Microsoft.Photos.MediaEngineDLC_1.0.0.0_x64__8wekyb3d8bbwe</span><span class="p">,</span><span class="w">
+                    </span><span class="n">Microsoft.UI.Xaml.2.6_2.62112.3002.0_x64__8wekyb3d8bbwe</span><span class="p">,</span><span class="w">
+                    </span><span class="n">Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe</span><span class="p">,</span><span class="w">
+                    </span><span class="n">Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe...</span><span class="p">}</span><span class="w">
+</span><span class="n">IsPartiallyStaged</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nx">False</span><span class="w">
+</span><span class="n">SignatureKind</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="nx">Store</span><span class="w">
+</span><span class="n">Status</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="nx">Ok</span><span class="w">
+</span></code></pre></div></div>
+<p>This method displays both the <em>PackageFamilyName</em> (<em>Microsoft.Windows.Photos_8wekyb3d8bbwe</em> in this case) and the location of the executable (<em>C:\Program Files\WindowsApps\Microsoft.Windows.Photos_2021.21110.8005.0_x64__8wekyb3d8bbwe</em>). A less hit-and-miss method would be to use keywords we found in the target field of the app shortcut (preferably, the beginning of the string, which we can always see) and use the <code class="language-plaintext highlighter-rouge">Where-Object</code> cmdlet to filter results using the <em>PackageFamilyName</em> itself<sup id="fnref:shortcut" role="doc-noteref"><a href="#fn:shortcut" class="footnote" rel="footnote">2</a></sup>… like so:</p>
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-AppxPackage</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Where-Object</span><span class="w"> </span><span class="p">{</span><span class="bp">$_</span><span class="w"> </span><span class="o">-like</span><span class="w"> </span><span class="s2">"*Photo*"</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>with that out of the way, we can now go to the folder containing the app and find the <em>AppxManifest.xml</em> file there. In this file, we need to find the <em>ApplicationID</em>.<sup id="fnref:appid" role="doc-noteref"><a href="#fn:appid" class="footnote" rel="footnote">3</a></sup> For <strong>Microsoft Photos</strong>, for instance:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;Application</span> <span class="na">Id=</span><span class="s">"App"</span> <span class="na">Executable=</span><span class="s">"Microsoft.Photos.exe"</span> <span class="na">EntryPoint=</span><span class="s">"AppStubCS.Windows.App"</span> <span class="na">ResourceGroup=</span><span class="s">"AppGroup"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+<p>The <em>ApplicationID</em> is just “App” in this case. So, the command to launch <strong>Microsoft Photos</strong> from the command line then becomes:</p>
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">explorer</span><span class="w"> </span><span class="nx">shell:appsfolder\Microsoft.Windows.Photos_8wekyb3d8bbwe</span><span class="o">!</span><span class="nx">App</span><span class="w">
+</span></code></pre></div></div>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:accessmethod" role="doc-endnote">
+      <p>I personally use <strong>Microsoft Powertoys</strong> for the same - <code class="language-plaintext highlighter-rouge">&gt; shell:appsfolder</code> does the trick. <a href="#fnref:accessmethod" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:shortcut" role="doc-endnote">
+      <p>The first method, if it works reliably, then creating the shortcut or going to <em>shell:appsfolder</em> is redundant. <a href="#fnref:shortcut" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:appid" role="doc-endnote">
+      <p>A simple document search should do. We should search for the <em>Executable=</em> property of the application, as one application package may contain more than one application. <a href="#fnref:appid" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div><a class="u-url" href="/tweaks/2022/01/13/cmdrun-winstoreapp.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">ProgBlog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">ProgBlog</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/amzon-ex"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">amzon-ex</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>A blog documenting progress</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
