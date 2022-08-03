@@ -1,0 +1,4 @@
+!progblog/
+
+progblog/*
+!progblog/_site/
