@@ -1,0 +1,28 @@
+---
+layout: post
+title:  "Template"
+date:   2021-10-21 12:00:00 +0530
+categories: cat
+tags:
+    - tag1
+    - tag2
+---
+[//]: # (The body)
+
+This is only a template.
+
+
+
+---
+
+[//]: # (Footnotes, if any)
+
+[^fn]: Footnote
+
+
+
+
+
+[//]: # (Links, if any)
+
+[1]: <google.com>
