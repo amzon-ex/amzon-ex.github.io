@@ -1,6 +1,0 @@
-!progblog/
-
-progblog/*
-!progblog/_site/
-
-progblog/_site/**/template.html
