@@ -6,27 +6,27 @@
   <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="/css/searchoverlay.css" rel="stylesheet"><!-- Begin Jekyll SEO tag v2.7.1 -->
+  <link href="/progblog/css/searchoverlay.css" rel="stylesheet"><!-- Begin Jekyll SEO tag v2.7.1 -->
 <title>Adding a Powershell Profile | ProgBlog</title>
 <meta name="generator" content="Jekyll v4.2.1" />
 <meta property="og:title" content="Adding a Powershell Profile" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="The Powershell profile is equivalent to the ~/.bashrc file for bash in Linux. It helps load a desired configuration when a Powershell instance is run. To test if there is a profile: Test-Path $profile The variable $profile refers to the profile. If absent, this returns False. If False, create one: New-Item -path $profile -type file -force A typical (user) profile path looks like: $home\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1 where for me, $home = C:\Users\Ayon\ - Ayon is the username. Once created, we can use an editor to edit the file. I use Sublime Text (cli: subl) for the purpose: subl $profile Script running permissions: Running scripts on Powershell might be disabled by default. From this thread, we can use Powershell as Admin (Win+X-&gt;A) to change the execution policy of scripts: Set-ExecutionPolicy RemoteSigned This worked for my use case. The Unrestricted flag can be used instead, but I haven’t researched about when I should do so. TO BE INVESTIGATED." />
 <meta property="og:description" content="The Powershell profile is equivalent to the ~/.bashrc file for bash in Linux. It helps load a desired configuration when a Powershell instance is run. To test if there is a profile: Test-Path $profile The variable $profile refers to the profile. If absent, this returns False. If False, create one: New-Item -path $profile -type file -force A typical (user) profile path looks like: $home\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1 where for me, $home = C:\Users\Ayon\ - Ayon is the username. Once created, we can use an editor to edit the file. I use Sublime Text (cli: subl) for the purpose: subl $profile Script running permissions: Running scripts on Powershell might be disabled by default. From this thread, we can use Powershell as Admin (Win+X-&gt;A) to change the execution policy of scripts: Set-ExecutionPolicy RemoteSigned This worked for my use case. The Unrestricted flag can be used instead, but I haven’t researched about when I should do so. TO BE INVESTIGATED." />
-<link rel="canonical" href="http://localhost:4000/tweaks/2021/10/22/pwsh-profile.html" />
-<meta property="og:url" content="http://localhost:4000/tweaks/2021/10/22/pwsh-profile.html" />
+<link rel="canonical" href="http://localhost:4000/progblog/tweaks/2021/10/22/pwsh-profile.html" />
+<meta property="og:url" content="http://localhost:4000/progblog/tweaks/2021/10/22/pwsh-profile.html" />
 <meta property="og:site_name" content="ProgBlog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-10-22T15:00:00+05:30" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Adding a Powershell Profile" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","url":"http://localhost:4000/tweaks/2021/10/22/pwsh-profile.html","headline":"Adding a Powershell Profile","dateModified":"2021-10-22T15:00:00+05:30","datePublished":"2021-10-22T15:00:00+05:30","description":"The Powershell profile is equivalent to the ~/.bashrc file for bash in Linux. It helps load a desired configuration when a Powershell instance is run. To test if there is a profile: Test-Path $profile The variable $profile refers to the profile. If absent, this returns False. If False, create one: New-Item -path $profile -type file -force A typical (user) profile path looks like: $home\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1 where for me, $home = C:\\Users\\Ayon\\ - Ayon is the username. Once created, we can use an editor to edit the file. I use Sublime Text (cli: subl) for the purpose: subl $profile Script running permissions: Running scripts on Powershell might be disabled by default. From this thread, we can use Powershell as Admin (Win+X-&gt;A) to change the execution policy of scripts: Set-ExecutionPolicy RemoteSigned This worked for my use case. The Unrestricted flag can be used instead, but I haven’t researched about when I should do so. TO BE INVESTIGATED.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/tweaks/2021/10/22/pwsh-profile.html"},"@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","url":"http://localhost:4000/progblog/tweaks/2021/10/22/pwsh-profile.html","headline":"Adding a Powershell Profile","dateModified":"2021-10-22T15:00:00+05:30","datePublished":"2021-10-22T15:00:00+05:30","description":"The Powershell profile is equivalent to the ~/.bashrc file for bash in Linux. It helps load a desired configuration when a Powershell instance is run. To test if there is a profile: Test-Path $profile The variable $profile refers to the profile. If absent, this returns False. If False, create one: New-Item -path $profile -type file -force A typical (user) profile path looks like: $home\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1 where for me, $home = C:\\Users\\Ayon\\ - Ayon is the username. Once created, we can use an editor to edit the file. I use Sublime Text (cli: subl) for the purpose: subl $profile Script running permissions: Running scripts on Powershell might be disabled by default. From this thread, we can use Powershell as Admin (Win+X-&gt;A) to change the execution policy of scripts: Set-ExecutionPolicy RemoteSigned This worked for my use case. The Unrestricted flag can be used instead, but I haven’t researched about when I should do so. TO BE INVESTIGATED.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/progblog/tweaks/2021/10/22/pwsh-profile.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="ProgBlog" /></head>
+<link rel="stylesheet" href="/progblog/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/progblog/feed.xml" title="ProgBlog" /></head>
 <body><header class="site-header" role="banner">
 
-  <div class="wrapper"><a class="site-title" rel="author" href="/">ProgBlog</a>
+  <div class="wrapper"><a class="site-title" rel="author" href="/progblog/">ProgBlog</a>
 
     <script>
       $(document).ready(function() {
@@ -63,14 +63,14 @@
       </div>
     </div>
     <!-- Script pointing to search-script.js -->
-    <script src="/js/search-script.js" type="text/javascript"></script>
+    <script src="/progblog/js/search-script.js" type="text/javascript"></script>
 
     <!-- Configuration -->
     <script>
     var srch = SimpleJekyllSearch({
       searchInput: document.getElementById('search-input'),
       resultsContainer: document.getElementById('results-container'),
-      json: '/search.json',
+      json: '/progblog/search.json',
       searchResultTemplate: `
       <li>
         <div style="display:inline"><a href="{url}" title="{desc}">{title}</a></div>
@@ -135,12 +135,12 @@
 <p>This worked for my use case. The <code class="language-plaintext highlighter-rouge">Unrestricted</code> flag can be used instead, but I haven’t researched about when I should do so. <span style="color:red"><em>TO BE INVESTIGATED.</em></span></p>
 
 
-  </div><a class="u-url" href="/tweaks/2021/10/22/pwsh-profile.html" hidden></a>
+  </div><a class="u-url" href="/progblog/tweaks/2021/10/22/pwsh-profile.html" hidden></a>
 </article>
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
+  <data class="u-url" href="/progblog/"></data>
 
   <div class="wrapper">
 
@@ -152,7 +152,7 @@
           <li class="p-name">ProgBlog</li></ul>
       </div>
 
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/amzon-ex"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">amzon-ex</span></a></li></ul>
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/amzon-ex"><svg class="svg-icon"><use xlink:href="/progblog/assets/minima-social-icons.svg#github"></use></svg> <span class="username">amzon-ex</span></a></li></ul>
 </div>
 
       <div class="footer-col footer-col-3">

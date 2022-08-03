@@ -40,14 +40,14 @@
       </div>
     </div>
     <!-- Script pointing to search-script.js -->
-    <script src="/js/search-script.js" type="text/javascript"></script>
+    <script src="{{ "/js/search-script.js" | relative_url }}" type="text/javascript"></script>
 
     <!-- Configuration -->
     <script>
     var srch = SimpleJekyllSearch({
       searchInput: document.getElementById('search-input'),
       resultsContainer: document.getElementById('results-container'),
-      json: '/search.json',
+      json: '{{ "/search.json" | relative_url }}',
       searchResultTemplate: `
       <li>
         <div style="display:inline"><a href="{url}" title="{desc}">{title}</a></div>
